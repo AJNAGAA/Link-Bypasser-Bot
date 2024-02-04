@@ -46,11 +46,11 @@ gdlist = ["appdrive","driveapp","drivehub","gdflix","drivesharer","drivebit","dr
 
 def pdisk(url):
     client = requests.session()
-    DOMAIN = "https://www.infokeeda.xyz/"
+    DOMAIN = "https://last.moneycase.link/"
     url = url[:-1] if url[-1] == '/' else url
     code = url.split("/")[-1]
     final_url = f"{DOMAIN}/{code}"
-    ref = "https://last.moneycase.link/"
+    ref = "https://www.infokeeda.xyz/"
     h = {"referer": ref}
     while len(client.cookies) == 0:
         resp = client.get(final_url,headers=h)
