@@ -769,7 +769,7 @@ def shrdsk(url: str) -> str:
         url = cget('GET', url).url
         res = cget('GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
     except Exception as e:
-		return (f'{e.__class__.__name__}')
+		return (f'ERROR: {e.__class__.__name__}')
 	res = res.json()
     if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
         return quote(res["video_url"], safe=":/")
