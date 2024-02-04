@@ -45,11 +45,24 @@ gdlist = ["appdrive","driveapp","drivehub","gdflix","drivesharer","drivebit","dr
 # pdisk
 
 def pdisk(url):
-    r = requests.get(url).text
-    try: return r.split("<!-- ")[-1].split(" -->")[0]
-    except:
-        try:return BeautifulSoup(r,"html.parser").find('video').find("source").get("src")
-        except: return None
+    client = requests.session()
+    DOMAIN = "https://www.infokeeda.xyz/"
+    url = url[:-1] if url[-1] == '/' else url
+    code = url.split("/")[-1]
+    final_url = f"{DOMAIN}/{code}"
+    ref = "https://last.moneycase.link/"
+    h = {"referer": ref}
+    while len(client.cookies) == 0:
+        resp = client.get(final_url,headers=h)
+        time.sleep(2)
+    soup = BeautifulSoup(resp.content, "html.parser")
+    inputs = soup.find_all("input")
+    data = { input.get('name'): input.get('value') for input in inputs }
+    h = { "x-requested-with": "XMLHttpRequest" }
+    time.sleep(8)
+    r = client.post(f"{DOMAIN}/links/go", data=data, headers=h)
+    try: return r.json()['url']
+    except: return "Something went wrong :("
 
 ###############################################################
 # index scrapper
