@@ -30,7 +30,7 @@ ddllist = ['1drv.ms','1fichier.com','4funbox','akmfiles','anonfiles.com','antfil
 		   'mediafire.com','megaupload.nz','mirrobox','mm9842.com','momerybox','myfile.is','naniplay.com','naniplay.nanime.biz',
 		   'naniplay.nanime.in','nephobox','openload.cc','osdn.net','pixeldrain.com','racaty','rapidshare.nu','sbembed.com',
 		   'sbplay.org','share-online.is','shrdsk','solidfiles.com','streamsb.net','streamtape','terabox','teraboxapp','upload.ee',
-		   'uptobox.com','upvid.cc','vshare.is','watchsb.com','we.tl','wetransfer.com','yadi.sk','zippyshare.com']
+		   'uptobox.com','upvid.cc','vshare.is','watchsb.com','we.tl','wetransfer.com','yadi.sk','zippyshare.com','shrdsk.me']
 
 
 def is_share_link(url):
@@ -109,6 +109,8 @@ def direct_link_generator(link: str):
 		return zippyshare(link)
 	elif 'mdisk.me' in domain:
 		return mdisk(link)
+	elif 'shrdsk.me' in domain:
+		return shrdsk(link)
 	elif any(x in domain for x in ['wetransfer.com', 'we.tl']):
 		return wetransfer(link)
 	elif any(x in domain for x in anonfilesBaseSites):
@@ -868,3 +870,19 @@ def zippyshare(url):
 			f"ERROR: uri1 or uri2 not found with method {method}")
 	domain = urlparse(url).hostname
 	return f"https://{domain}/{uri1[0]}/{mtk}/{uri2[0]}"
+
+def shrdsk(url: str) -> str:
+    cget = create_scraper().request
+    try:
+        url = cget('GET', url).url
+        res = cget('GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
+    except Exception as e:
+        raise DDLException(f'{e.__class__.__name__}')
+    if res.status_code != 200:
+        raise DDLException(f'Status Code {res.status_code}')
+    res = res.json()
+    if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
+        return quote(res["video_url"], safe=":/")
+    raise DDLException("No Direct Link Found")
+
+
