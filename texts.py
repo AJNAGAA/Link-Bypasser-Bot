@@ -58,6 +58,7 @@ ddltext = """__- yandex \n\
 
 
 shortnertext = """__- igg-games \n\
+- pdisk\n\
 - olamovies\n\
 - katdrive \n\
 - drivefire\n\
