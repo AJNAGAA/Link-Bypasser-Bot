@@ -109,8 +109,6 @@ def direct_link_generator(link: str):
 		return zippyshare(link)
 	elif 'mdisk.me' in domain:
 		return mdisk(link)
-	elif 'shrdsk.me' in domain:
-		return shrdsk(link)
 	elif any(x in domain for x in ['wetransfer.com', 'we.tl']):
 		return wetransfer(link)
 	elif any(x in domain for x in anonfilesBaseSites):
@@ -766,20 +764,17 @@ def akmfiles(url):
 
 
 def shrdsk(url):
-	cget = create_scraper().request
-	try:
-		url = cget('GET', url).url
-		res = cget(
-			'GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
-	except Exception as e:
-		return (f'ERROR: {e.__class__.__name__}')
-	if res.status_code != 200:
-		return (
-			f'ERROR: Status Code {res.status_code}')
+	ef shrdsk(url: str) -> str:
+    cget = create_scraper().request
+    try:
+        url = cget('GET', url).url
+        res = cget('GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
+    except Exception as e:
+		return (f'{e.__class__.__name__}')
 	res = res.json()
-	if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
-		return res["video_url"]
-	return ("ERROR: cannot find direct link")
+    if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
+        return quote(res["video_url"], safe=":/")
+	return ("No Direct Link Found")
 
 
 def linkbox(url):
