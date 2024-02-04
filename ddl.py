@@ -763,8 +763,7 @@ def akmfiles(url):
 		return ('ERROR: Direct link not found')
 
 
-def shrdsk(url):
-	ef shrdsk(url: str) -> str:
+def shrdsk(url: str) -> str:
     cget = create_scraper().request
     try:
         url = cget('GET', url).url
