@@ -763,17 +763,22 @@ def akmfiles(url):
 		return ('ERROR: Direct link not found')
 
 
-def shrdsk(url: str) -> str:
-    cget = create_scraper().request
-    try:
-        url = cget('GET', url).url
-        res = cget('GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
-    except Exception as e:
+def shrdsk(url):
+	cget = create_scraper().request
+	try:
+		url = cget('GET', url).url
+		res = cget(
+			'GET', f'https://us-central1-affiliate2apk.cloudfunctions.net/get_data?shortid={url.split("/")[-1]}')
+	except Exception as e:
 		return (f'ERROR: {e.__class__.__name__}')
+	if res.status_code != 200:
+		return (
+			f'ERROR: Status Code {res.status_code}')
 	res = res.json()
-    if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
-        return quote(res["video_url"], safe=":/")
-	return ("No Direct Link Found")
+	if ("type" in res and res["type"].lower() == "upload" and "video_url" in res):
+		return res["video_url"]
+	return ("ERROR: cannot find direct link")
+
 
 
 def linkbox(url):
